@@ -1,4 +1,3 @@
-package exercise234CMS;
 
 public class CMSApp {
 
@@ -8,7 +7,6 @@ public class CMSApp {
         CMSModel cmsm = new CMSModel();
         CMSController theController = new CMSController(cmsv, icv, cmsm);
         theController.run();
-
     }
 
 }
