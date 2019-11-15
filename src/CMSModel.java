@@ -1,28 +1,37 @@
-
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Model Class for the CMS Application. This class is used to communicate with the MySQL Database
+ * using JDBC and executing queries.
+ */
 public class CMSModel {
     public Connection jdbc_connection;
-    public PreparedStatement pStatement;
+    public PreparedStatement pStatement; // Use prepared statements for additional security
     public String tableName = "Client";
     public String databaseName = "mydb";
     // Table will be created in existing database - no createDB() method
+    // Ensure that database already created before running
     public String connectionInfo = "jdbc:mysql://localhost/" + databaseName +
             "?verifyServerCertificate=false&useSSL=true",
+            // Change login information before using.
             login          = "root",
             password       = "karim123",
-            dataFile = "ENSF593-Lab8/src/exercise234CMS/clients.txt";
+            // Optional - link to .txt file containing client information
+            dataFile = "clients.txt";
 
+    /**
+     * Constructor that establishes connection to MySQL database using JDBC.
+     */
     public CMSModel()
     {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             jdbc_connection = DriverManager.getConnection(connectionInfo, login, password);
+            // Create + fill table (if not already done - see methods for details)
             createTable();
             fillTable();
         } catch(SQLException e) {
@@ -32,8 +41,15 @@ public class CMSModel {
         }
     }
 
+    /**
+     * Executes a search query and returns the results in an ArrayList
+     * @param searchCriteria search criteria ('id', 'lastName' or 'clientType')
+     * @param searchQuery Search query
+     * @return Array List of Client Objects containing all matches - otherwise null.
+     */
     public ArrayList<Client> getSearchResults(String searchCriteria, String searchQuery) {
         String sql;
+        // Set SQL query statement based on search column
         if (searchCriteria.equals("id")) {
             sql = "SELECT * FROM " + tableName + " WHERE id=?";
         } else if (searchCriteria.equals("lastName")) {
@@ -51,6 +67,8 @@ public class CMSModel {
             pStatement.setString(1, searchQuery);
 
             ResultSet rs = pStatement.executeQuery();
+
+            // Iterate over Result Set, adding Client object to ArrayList
             while (rs.next()) {
                 Client toAdd = new Client(rs.getString("firstName"), rs.getString("lastName"),
                                           rs.getString("address"), rs.getString("postalCode"),
@@ -63,6 +81,7 @@ public class CMSModel {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        // return result
         return searchResults;
     }
 
@@ -72,6 +91,7 @@ public class CMSModel {
      */
     public void addClient(Client client)
     {
+        // Set-up SQL query using Prepared Statement to prevent SQL Injection
         String sql = "INSERT INTO " + tableName + " VALUES (null, ?, ?, ?, ?, ?, ?);";
         try {
             pStatement = jdbc_connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -83,17 +103,23 @@ public class CMSModel {
             pStatement.setString(6, String.valueOf(client.getClientType()));
             pStatement.executeUpdate();
 
+            // Get back generated ID to assign to client Object
             ResultSet generatedID = pStatement.getGeneratedKeys();
             if (generatedID.next()) {
                 client.setId(generatedID.getInt(1));
             }
-            System.out.println(client.getId());
         } catch(SQLException e) {
             e.printStackTrace();
         }
     }
 
+    /**
+     * Update a client information in the Database
+     * @param id unique ID of the client
+     * @param client Client object containing updated information
+     */
     public void updateClient(int id, Client client) {
+        // Set-up SQL query using Prepared Statement to prevent SQL Injection
         String sql = "UPDATE " + tableName + " SET " +
                 "firstName = ?, " +
                 "lastName = ?, " +
@@ -118,7 +144,12 @@ public class CMSModel {
         }
     }
 
+    /**
+     * Delete client row from the database
+     * @param id unique ID of the client to delete
+     */
     public void deleteClient(int id) {
+        // Set-up SQL query using Prepared Statement to prevent SQL Injection
         String sql = "DELETE FROM " + tableName + " WHERE id = ?;";
 
         try {
@@ -135,6 +166,7 @@ public class CMSModel {
      */
     private void createTable()
     {
+        // Sets ID to auto_increment
         String sql = "CREATE TABLE IF NOT EXISTS " + tableName + " (" +
                 "id INT AUTO_INCREMENT, " +
                 "firstName VARCHAR(20) NOT NULL, " +
@@ -168,6 +200,7 @@ public class CMSModel {
                 return;
             }
 
+            // Loop over text file, parsing data and adding to DB
             Scanner sc = new Scanner(new FileReader(dataFile));
             while(sc.hasNext())
             {
@@ -182,14 +215,4 @@ public class CMSModel {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        CMSModel cm = new CMSModel();
-
-        ArrayList<Client> test = cm.getSearchResults("id", "5");
-        System.out.println(test);
-
-        System.out.println(test.get(0).getClass());
-    }
-
 }

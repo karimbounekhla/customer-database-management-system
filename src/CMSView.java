@@ -6,6 +6,9 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
+/**
+ * Class representing the User Interface / GUI for the Main CMS Window.
+ */
 public class CMSView extends JFrame {
     private JList searchResultList;
     private ArrayList<Client> currResults;
@@ -19,6 +22,9 @@ public class CMSView extends JFrame {
     private JComboBox clientTypeCombo;
     private final Character[] clientTypeChoices = {'C', 'R'};
 
+    /**
+     * Constructor to set up Layout and add Elements
+     */
     public CMSView() {
         super("Client Management Screen");
         setLayout(new BorderLayout());
@@ -27,17 +33,28 @@ public class CMSView extends JFrame {
         addElements();
     }
 
+    /**
+     * Method to display CMS View
+     */
     public void run() {
         setSize(700, 600);
         setLocationRelativeTo(null);
         setVisible(true);
     }
 
+    /**
+     * Refresh results to display list of clients found from search operation
+     * @param results ArrayList containing Client objects from Search Query
+     */
     public void refreshResults(ArrayList<Client> results) {
         currResults = results;
         searchResultList.setListData(currResults.toArray());
     }
 
+    /**
+     * Returns the current search result list
+     * @return ArrayList of Client Objects representing latest search query
+     */
     public ArrayList<Client> getCurrResults() {
         return currResults;
     }
@@ -118,14 +135,25 @@ public class CMSView extends JFrame {
                 "Success!", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    /**
+     * Returns user search input
+     * @return search input
+     */
     public String getSearchQuery() {
         return searchField.getText();
     }
 
+    /**
+     * Returns user search criteria
+     * @return search criteria ('id', 'lastName' or 'clientType')
+     */
     public String getSearchCriteria() {
         return searchButtonGrp.getSelection().getActionCommand();
     }
 
+    /**
+     * Clear search result list and input field
+     */
     public void clearSearch() {
         searchField.setText("");
         DefaultListModel empty = new DefaultListModel();
@@ -133,22 +161,31 @@ public class CMSView extends JFrame {
         clearClientDetails();
     }
 
-        public Client getSelectedClient() {
+    /**
+     * Returns object of the client that is currently selected in the search
+     * @return object of selected client, null if no client selected
+     */
+    public Client getSelectedClient() {
         Object selection = searchResultList.getSelectedValue();
         if (selection == null) return null;
-
         return (Client) selection;
     }
 
+    /**
+     * Populates the right panel with client details
+     * @param client Client object of interest
+     */
     public void populateClientDetails(Client client) {
         if (client == null) return;
 
+        // Set text of all text fields with client information
         clientIDField.setText(client.getId()+"");
         firstNameField.setText(client.getFirstName());
         lastNameField.setText(client.getLastName());
         addressTextArea.setText(client.getAddress());
         postalCodeField.setText(client.getPostalCode());
         phoneNumberField.setText(client.getPhoneNumber());
+
         if (client.getClientType().equals("C")) {
             clientTypeCombo.setSelectedIndex(0);
         } else {
@@ -156,30 +193,57 @@ public class CMSView extends JFrame {
         }
     }
 
+    /**
+     * Get value of the first name field (right panel - client details)
+     * @return value in first name field
+     */
     public String getFirstNameField() {
         return firstNameField.getText();
     }
 
+    /**
+     * Get value of the last name field (right panel - client details)
+     * @return value in last name field
+     */
     public String getLastNameField() {
         return lastNameField.getText();
     }
 
+    /**
+     * Get value of the postal code field (right panel - client details)
+     * @return value in postal code field
+     */
     public String getPostalCodeField() {
         return postalCodeField.getText();
     }
 
+    /**
+     * Get value of the phone number field (right panel - client details)
+     * @return value in phone number field
+     */
     public String getPhoneNumberField() {
         return phoneNumberField.getText();
     }
 
+    /**
+     * Get value of the address field (right panel - client details)
+     * @return value in address field
+     */
     public String getAddressTextArea() {
         return addressTextArea.getText();
     }
 
+    /**
+     * Get value of the selected client type (right panel - client details)
+     * @return selected client type from drop-down menu ('C' or 'R')
+     */
     public String getClientTypeCombo() {
         return (clientTypeCombo.getSelectedIndex() == 0) ? "C" : "R";
     }
 
+    /**
+     * Clear all client details from right panel
+     */
     public void clearClientDetails() {
         clientIDField.setText("");
         firstNameField.setText("");
@@ -189,6 +253,9 @@ public class CMSView extends JFrame {
         phoneNumberField.setText("");
     }
 
+    /**
+     * Helper method to add Left and Right Panels
+     */
     private void addElements() {
         JPanel searchPanel = createSearchPanel();
         JPanel resultPanel = createResultPanel();
@@ -196,11 +263,19 @@ public class CMSView extends JFrame {
         add(resultPanel, BorderLayout.EAST);
     }
 
+    /**
+     * Helper method to create the Search Panel
+     * @return JPanel of the search UI components
+     */
     private JPanel createSearchPanel() {
+        // Search Panel uses a GridLayout with 2 rows and 1 column
         JPanel searchPanel = new JPanel(new GridLayout(2, 1));
         searchPanel.setPreferredSize(new Dimension(300, searchPanel.getHeight()));
+
+        // Set titled border
         searchPanel.setBorder(BorderFactory.createTitledBorder("Search Client"));
 
+        // Search Result panel consists of a JList (to display Objects) in a JScrollPane
         JPanel searchResultsPanel = new JPanel();
         searchResultsPanel.setLayout(new BoxLayout(searchResultsPanel, BoxLayout.PAGE_AXIS));
 
@@ -216,7 +291,12 @@ public class CMSView extends JFrame {
         return searchPanel;
     }
 
+    /**
+     * Helper method to create Search Form UI Components
+     * @return search form JPanel
+     */
     private JPanel createSearchForm() {
+        // Search Form uses a GriBagLayout
         JPanel searchForm = new JPanel();
         searchForm.setLayout(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -239,6 +319,7 @@ public class CMSView extends JFrame {
         searchButtonGrp.add(radioName);
         searchButtonGrp.add(radioType);
 
+        // Set UI components along vertical axis
         gc.gridy = 1;
         searchForm.add(radioID, gc);
         gc.gridy = 2;
@@ -246,13 +327,10 @@ public class CMSView extends JFrame {
         gc.gridy = 3;
         searchForm.add(radioType, gc);
         gc.gridy = 4;
-
         searchForm.add(new JLabel("Enter the Search Parameter below:"), gc);
-
         gc.gridy = 5;
         searchField = new JTextField(12);
         searchForm.add(searchField, gc);
-
         gc.gridy = 6;
         gc.gridx = 0;
         searchButton = new JButton("Search");
@@ -264,7 +342,12 @@ public class CMSView extends JFrame {
         return searchForm;
     }
 
+    /**
+     * Helper method to create the client details panel
+     * @return client detail JPanel
+     */
     private JPanel createResultPanel() {
+        // Client details panel uses a GridLayout with 10 rows and 1 column
         JPanel resultPanel = new JPanel();
         resultPanel.setLayout(new GridLayout(10, 1));
         resultPanel.setPreferredSize(new Dimension(400, resultPanel.getHeight()));
@@ -303,17 +386,16 @@ public class CMSView extends JFrame {
         return resultPanel;
     }
 
+    /**
+     * Helper method to create a panel for each row, containing a label and a text field
+     * @param l label of the text input field
+     * @param tf Text Field object
+     * @return JPanel of that row
+     */
     private JPanel resultRow(JLabel l, JTextField tf) {
         JPanel panel = new JPanel();
         panel.add(l);
         panel.add(tf);
         return panel;
     }
-
-    public static void main(String[] args) {
-        CMSView cms = new CMSView();
-        cms.run();
-    }
-
-
 }

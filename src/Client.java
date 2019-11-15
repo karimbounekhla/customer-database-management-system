@@ -1,5 +1,6 @@
-
-
+/**
+ * Class representing the Client object and all attributes.
+ */
 public class Client {
     private int id;
     private String firstName;

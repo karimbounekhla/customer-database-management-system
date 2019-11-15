@@ -1,5 +1,3 @@
-
-
 import javax.swing.*;
 import java.awt.event.ActionListener;
 
@@ -36,7 +34,7 @@ public class InsertClientView extends JFrame {
     }
 
     /**
-     * Clears the fields.
+     * Clears the text input fields.
      */
     public void clearFields() {
         firstNameField.setText("");
@@ -160,6 +158,10 @@ public class InsertClientView extends JFrame {
         return secondRow;
     }
 
+    /**
+     * Helper method to populate the third input row with JFrame objects
+     * @return JPanel container object
+     */
     private JPanel thirdRow() {
         JPanel thirdRow = new JPanel();
 
@@ -186,10 +188,5 @@ public class InsertClientView extends JFrame {
         buttonRow.add(returnMain);
 
         return buttonRow;
-    }
-
-    public static void main(String[] args) {
-        InsertClientView icv = new InsertClientView();
-        icv.run();
     }
 }

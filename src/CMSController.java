@@ -4,14 +4,24 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.regex.Pattern;
 
+/**
+ * Controller class for the Application. Controls the data flow between the model and the view,
+ * as well as updating the view, while keeping them separate.
+ * This class implements all listener classes for the CMS and Insert Client View.
+ */
 public class CMSController {
     private CMSView theCMSView;
     private InsertClientView theInsertView;
     private CMSModel theModel;
     private InputVerify verifyInput;
 
+    /**
+     * Constructor used to set references to the Model and view Objects
+     * @param cmsv the Customer Management System View
+     * @param icv the Insert Customer View
+     * @param cmsm the Customer Management System Model
+     */
     public CMSController(CMSView cmsv, InsertClientView icv, CMSModel cmsm) {
         theCMSView = cmsv;
         theInsertView = icv;
@@ -20,31 +30,52 @@ public class CMSController {
         addListeners();
     }
 
+    /**
+     * Displays CMS view
+     */
     public void run() {
         theCMSView.run();
     }
 
+    /**
+     * Searches for clients by 'id' and displays the result.
+     * @param id search ID
+     */
     private void searchByID(int id) {
-        if (verifyInput.invalidID(id+"")) return;
+        // Check that ID in valid format
+        if (verifyInput.isInvalidID(id+"")) return;
 
+        // Fetch result list from Model and display on view
         ArrayList<Client> searchResults = theModel.getSearchResults("id", id+"");
         if (searchResults != null) {
             theCMSView.refreshResults(searchResults);
         }
     }
 
+    /**
+     * Searches for clients by client Type. Either 'C' (Commercial) or 'R' (Residential)
+     * @param clientType the client type
+     */
     private void searchByType(String clientType) {
-        if (verifyInput.invalidType(clientType)) return;
+        // Check that Customer Type in valid format
+        if (verifyInput.isInvalidType(clientType)) return;
 
+        // Fetch result list from Model and display on view
         ArrayList<Client> searchResults = theModel.getSearchResults("clientType", clientType);
         if (searchResults != null) {
             theCMSView.refreshResults(searchResults);
         }
     }
 
+    /**
+     * Searches for clients by Last Name.
+     * @param lastName searched Last Name
+     */
     private void searchByLastName(String lastName) {
-        if (verifyInput.invalidName("", lastName)) return;
+        // Check that name is in the valid format (< 20 chars)
+        if (verifyInput.isInvalidName("", lastName)) return;
 
+        // Fetch result list from Model and display on view
         ArrayList<Client> searchResults = theModel.getSearchResults("lastName", lastName);
         if (searchResults != null) {
             theCMSView.refreshResults(searchResults);
@@ -52,74 +83,29 @@ public class CMSController {
     }
 
     /**
-     * Checks that all client information is valid
-     * @return True if client has invalid input (name, address, postal code, phone num or type)
+     * Checks that all client information is valid.
+     * First/Last name < 20 characters
+     * Address < 50 characters
+     * Postal Code in format A1A 1A1 (where A is a letter, 1 is a digit)
+     * Phone number in format 123-456-7890
+     * Customer type - either 'C' or 'R'
+     * @return True if client has any invalid input (name, address, postal code, phone num or type)
      */
     private boolean invalidClient(String fName, String lName, String address,
                                   String phone, String postalCode, String type) {
-        if (verifyInput.invalidName(fName, lName)
-            || verifyInput.invalidAddress(address)
-            || verifyInput.invalidPhone(phone)
-            || verifyInput.invalidPostalCode(postalCode)
-            || verifyInput.invalidType(type)) {
+        if (verifyInput.isInvalidName(fName, lName)
+            || verifyInput.isInvalidAddress(address)
+            || verifyInput.isInvalidPhone(phone)
+            || verifyInput.isInvalidPostalCode(postalCode)
+            || verifyInput.isInvalidType(type)) {
             return true;
         }
         return false;
     }
 
-//    private boolean invalidType(String clientType) {
-//        if (clientType.length() > 1 || !(clientType.equals("R") || clientType.equals("C"))) {
-//            theCMSView.errorMessage(theCMSView, "Client Type must be 1 character; either 'R' (Residential) " +
-//                    "or 'C' (Commercial).");
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean invalidName(String firstN, String lastN) {
-//        if (firstN.length() > 20 || firstN.length() > 20) {
-//            theCMSView.errorMessage(theCMSView, "First and/or Last Names must be less than 20 characters");
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean invalidAddress(String address) {
-//        if (address.length() > 50) {
-//            theCMSView.errorMessage(theCMSView, "Address must be less than 50 characters");
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean invalidPhone(String phoneNum) {
-//        Pattern phonePattern = Pattern.compile("^\\d{3}-\\d{3}-\\d{4}$");
-//        if (phoneNum.length() > 13 || !phonePattern.matcher(phoneNum).matches()) {
-//            System.out.println(phoneNum);
-//            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean invalidPostalCode(String postalCode) {
-//        Pattern postalPattern = Pattern.compile("^[A-Za-z]\\d[A-Za-z] \\d[A-Za-z]\\d$");
-//        if (postalCode.length() > 7 || !postalPattern.matcher(postalCode).matches()) {
-//            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private boolean invalidID(String id) {
-//        Pattern IDPattern = Pattern.compile("^[0-9]+$");
-//        if (id.length() <= 4 && IDPattern.matcher(id).matches()) {
-//            return false;
-//        }
-//        theCMSView.errorMessage(theCMSView, "ID must contain only digits up to 9999");
-//        return true;
-//    }
-
+    /**
+     * Helper method to add Listeners to Java Swing objects
+     */
     private void addListeners() {
         theCMSView.addDeleteListener(new deleteListener());
         theCMSView.addClearSearchListener(new clearSearchListener());
@@ -135,17 +121,27 @@ public class CMSController {
     ///////////// Listeners for CMS Frame /////////////
     ////////////////////////////////////////////////////
 
+    /**
+     * Listener class for the 'Search' Button
+     */
     private class searchListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Take in search criteria (ID, Last Name or Client Type) from radio button selection
             String searchCriteria = theCMSView.getSearchCriteria();
             search(searchCriteria);
         }
 
+        /**
+         * Helper method that calls in the appropriate search method based on search criteria
+         * @param criteria 'id', 'lastName' or 'clientType'
+         */
         private void search(String criteria) {
             String query = theCMSView.getSearchQuery();
-            if (criteria.equals("id") && !verifyInput.invalidID(query)) {
+
+            // Executes search based on criteria
+            if (criteria.equals("id") && !verifyInput.isInvalidID(query)) {
+                // Ensure that ID is valid before parsing to Int
                 searchByID(Integer.parseInt(query));
             } else if (criteria.equals("lastName")) {
                 searchByLastName(query);
@@ -157,32 +153,41 @@ public class CMSController {
         }
     }
 
+    /**
+     * Listener class for the 'Clear Search' Button
+     */
     private class clearSearchListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
             theCMSView.clearSearch();
         }
     }
 
+    /**
+     * Listener class for the 'Add New Client' Button
+     */
     private class addClientListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Clears inputs and displays Insert View
             theInsertView.clearFields();
             theInsertView.run();
         }
     }
 
+    /**
+     * Listener Class for the 'Save' Button
+     */
     private class saveListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Ensures that a searched client is selected
             if (theCMSView.getSelectedClient() == null) {
                 theCMSView.errorMessage(theCMSView, "No Client Selected.");
                 return;
             }
 
+            // Take inputs from Text Fields
             String newFirstName = theCMSView.getFirstNameField();
             String newLastName = theCMSView.getLastNameField();
             String newAddress = theCMSView.getAddressTextArea();
@@ -190,34 +195,44 @@ public class CMSController {
             String newPhoneNumber = theCMSView.getPhoneNumberField();
             String newClientType = theCMSView.getClientTypeCombo();
 
+            // Ensures that every input is valid, otherwise display appropriate messages and do nothing
             if (invalidClient(newFirstName, newLastName, newAddress, newPhoneNumber,
                               newPostalCode, newClientType)) {
                 return;
             }
 
+            // Get Client object from selection
             Client clientToUpdate = theCMSView.getSelectedClient();
+
+            // Update client based on value of text fields
             clientToUpdate.updateInfo(newFirstName, newLastName, newAddress, newPostalCode,
                                       newPhoneNumber, newClientType);
 
+            // Update Database with new information and show confirmation message
             theModel.updateClient(clientToUpdate.getId(), clientToUpdate);
             theCMSView.successMessage(theInsertView, "Successfully updated " +
                     "Client (ID: " + clientToUpdate.getId() + ")");
         }
-
-
     }
 
+    /**
+     * Listener Class for the 'Delete Client' Button
+     */
     private class deleteListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Ensures that a searched client is selected
             if (theCMSView.getSelectedClient() == null) {
                 theCMSView.errorMessage(theCMSView, "No Client Selected.");
                 return;
             }
+
+            // Display Confirmation Dialog before deleting
             int input = JOptionPane.showConfirmDialog(null,
                     "Do you want to delete the selected client?", "CONFIRMATION REQUIRED",
                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+
+            // If 'Yes' is pressed, delete client from DB and clear details
             if (input == 0) {
                 int idToDelete = theCMSView.getSelectedClient().getId();
                 theModel.deleteClient(idToDelete);
@@ -228,6 +243,10 @@ public class CMSController {
             }
         }
 
+        /**
+         * Helper method that removes Object from JList, which allows the search query to
+         * automatically refresh (removing the deleted client)
+         */
         private void removeResult() {
             ArrayList<Client> newResults = theCMSView.getCurrResults();
             newResults.remove(theCMSView.getSelectedClient());
@@ -235,10 +254,13 @@ public class CMSController {
         }
     }
 
+    /**
+     * Listener Class for the Search Results List
+     */
     private class resultDetailsListener implements ListSelectionListener {
-
         @Override
         public void valueChanged(ListSelectionEvent e) {
+            // If an object (object) is selected, get that object and display client details
             if (!e.getValueIsAdjusting()) {
                 Client selected = theCMSView.getSelectedClient();
                 theCMSView.populateClientDetails(selected);
@@ -250,23 +272,29 @@ public class CMSController {
     //////// Listeners for Insert Client Frame /////////
     ////////////////////////////////////////////////////
 
+    /**
+     * Listener Class for the 'Insert Client' Button
+     */
     private class insertListener implements ActionListener {
-
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Take inputs from text fields
             String firstName = theInsertView.getFirstNameField();
             String lastName = theInsertView.getLastNameField();
             String address = theInsertView.getAddressField();
             String postalCode = theInsertView.getPostalCode();
             String phoneNumber = theInsertView.getPhoneNumber();
+            // Set clientType based on dropdown choice
             String clientType = (theInsertView.getClientType() == 0) ? "C" : "R";
 
+            // Checks that all inputs are valid, display appropriate dialog boxes otherwise
             if (invalidClient(firstName, lastName, address, phoneNumber,
                     postalCode, clientType)) {
                 theInsertView.run();
                 return;
             }
 
+            // Create client object and add to database
             Client clientToAdd = new Client(firstName, lastName, address, postalCode, phoneNumber, clientType);
             theModel.addClient(clientToAdd);
             theCMSView.successMessage(theInsertView, "Client added to the Database successfully!");
@@ -274,19 +302,14 @@ public class CMSController {
         }
     }
 
+    /**
+     * Listener Button for the 'Cancel' Button
+     */
     private class cancelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            // Close insert view
             theInsertView.dispose();
         }
     }
-
-    public static void main(String[] args) {
-        Pattern phonePattern = Pattern.compile("^\\d{3}-\\d{3}-\\d{4}$");
-        String id = "584-594-3523";
-        if (!phonePattern.matcher(id).matches()) {
-            System.out.println("gucci");
-        }
-    }
-
 }

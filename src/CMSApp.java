@@ -1,6 +1,10 @@
 
 public class CMSApp {
 
+    /**
+     * Method used to initialize objects and run the application
+     * @param args unused
+     */
     public static void main(String[] args) {
         CMSView cmsv = new CMSView();
         InsertClientView icv = new InsertClientView();
