@@ -10,11 +10,13 @@ public class CMSController {
     private CMSView theCMSView;
     private InsertClientView theInsertView;
     private CMSModel theModel;
+    private InputVerify verifyInput;
 
     public CMSController(CMSView cmsv, InsertClientView icv, CMSModel cmsm) {
         theCMSView = cmsv;
         theInsertView = icv;
         theModel = cmsm;
+        verifyInput = new InputVerify(theCMSView);
         addListeners();
     }
 
@@ -23,7 +25,7 @@ public class CMSController {
     }
 
     private void searchByID(int id) {
-        if (invalidID(id+"")) return;
+        if (verifyInput.invalidID(id+"")) return;
 
         ArrayList<Client> searchResults = theModel.getSearchResults("id", id+"");
         if (searchResults != null) {
@@ -32,7 +34,7 @@ public class CMSController {
     }
 
     private void searchByType(String clientType) {
-        if (invalidType(clientType)) return;
+        if (verifyInput.invalidType(clientType)) return;
 
         ArrayList<Client> searchResults = theModel.getSearchResults("clientType", clientType);
         if (searchResults != null) {
@@ -41,7 +43,7 @@ public class CMSController {
     }
 
     private void searchByLastName(String lastName) {
-        if (invalidName("", lastName)) return;
+        if (verifyInput.invalidName("", lastName)) return;
 
         ArrayList<Client> searchResults = theModel.getSearchResults("lastName", lastName);
         if (searchResults != null) {
@@ -50,71 +52,73 @@ public class CMSController {
     }
 
     /**
-     *
-     * @param client
-     * @return
+     * Checks that all client information is valid
+     * @return True if client has invalid input (name, address, postal code, phone num or type)
      */
-    private boolean isClientValid(Client client) {
-        if (invalidName(client.getFirstName(), client.getLastName()) || invalidAddress(client.getAddress())
-            || invalidPhone(client.getPhoneNumber()) || invalidPostalCode(client.getPostalCode())
-            || invalidType(client.getClientType())) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean invalidType(String clientType) {
-        if (clientType.length() > 1 || !(clientType.equals("R") || clientType.equals("C"))) {
-            theCMSView.errorMessage(theCMSView, "Client Type must be 1 character; either 'R' (Residential) " +
-                    "or 'C' (Commercial).");
+    private boolean invalidClient(String fName, String lName, String address,
+                                  String phone, String postalCode, String type) {
+        if (verifyInput.invalidName(fName, lName)
+            || verifyInput.invalidAddress(address)
+            || verifyInput.invalidPhone(phone)
+            || verifyInput.invalidPostalCode(postalCode)
+            || verifyInput.invalidType(type)) {
             return true;
         }
         return false;
     }
 
-    private boolean invalidName(String firstN, String lastN) {
-        if (firstN.length() > 20 || firstN.length() > 20) {
-            theCMSView.errorMessage(theCMSView, "First and/or Last Names must be less than 20 characters");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean invalidAddress(String address) {
-        if (address.length() > 50) {
-            theCMSView.errorMessage(theCMSView, "Address must be less than 50 characters");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean invalidPhone(String phoneNum) {
-        Pattern phonePattern = Pattern.compile("^\\d{3}-\\d{3}-\\d{4}$");
-        if (phoneNum.length() > 13 || !phonePattern.matcher(phoneNum).matches()) {
-            System.out.println(phoneNum);
-            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean invalidPostalCode(String postalCode) {
-        Pattern postalPattern = Pattern.compile("^[A-Za-z]\\d[A-Za-z] \\d[A-Za-z]\\d$");
-        if (postalCode.length() > 7 || !postalPattern.matcher(postalCode).matches()) {
-            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
-            return true;
-        }
-        return false;
-    }
-
-    private boolean invalidID(String id) {
-        Pattern IDPattern = Pattern.compile("^[0-9]+$");
-        if (id.length() <= 4 && IDPattern.matcher(id).matches()) {
-            return false;
-        }
-        theCMSView.errorMessage(theCMSView, "ID must contain only digits up to 9999");
-        return true;
-    }
+//    private boolean invalidType(String clientType) {
+//        if (clientType.length() > 1 || !(clientType.equals("R") || clientType.equals("C"))) {
+//            theCMSView.errorMessage(theCMSView, "Client Type must be 1 character; either 'R' (Residential) " +
+//                    "or 'C' (Commercial).");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean invalidName(String firstN, String lastN) {
+//        if (firstN.length() > 20 || firstN.length() > 20) {
+//            theCMSView.errorMessage(theCMSView, "First and/or Last Names must be less than 20 characters");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean invalidAddress(String address) {
+//        if (address.length() > 50) {
+//            theCMSView.errorMessage(theCMSView, "Address must be less than 50 characters");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean invalidPhone(String phoneNum) {
+//        Pattern phonePattern = Pattern.compile("^\\d{3}-\\d{3}-\\d{4}$");
+//        if (phoneNum.length() > 13 || !phonePattern.matcher(phoneNum).matches()) {
+//            System.out.println(phoneNum);
+//            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean invalidPostalCode(String postalCode) {
+//        Pattern postalPattern = Pattern.compile("^[A-Za-z]\\d[A-Za-z] \\d[A-Za-z]\\d$");
+//        if (postalCode.length() > 7 || !postalPattern.matcher(postalCode).matches()) {
+//            theCMSView.errorMessage(theCMSView, "Phone Number must be in the format: 123-456-7890");
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    private boolean invalidID(String id) {
+//        Pattern IDPattern = Pattern.compile("^[0-9]+$");
+//        if (id.length() <= 4 && IDPattern.matcher(id).matches()) {
+//            return false;
+//        }
+//        theCMSView.errorMessage(theCMSView, "ID must contain only digits up to 9999");
+//        return true;
+//    }
 
     private void addListeners() {
         theCMSView.addDeleteListener(new deleteListener());
@@ -141,7 +145,7 @@ public class CMSController {
 
         private void search(String criteria) {
             String query = theCMSView.getSearchQuery();
-            if (criteria.equals("id") && !invalidID(query)) {
+            if (criteria.equals("id") && !verifyInput.invalidID(query)) {
                 searchByID(Integer.parseInt(query));
             } else if (criteria.equals("lastName")) {
                 searchByLastName(query);
@@ -186,8 +190,8 @@ public class CMSController {
             String newPhoneNumber = theCMSView.getPhoneNumberField();
             String newClientType = theCMSView.getClientTypeCombo();
 
-            if (invalidName(newFirstName, newLastName) || invalidAddress(newAddress) ||
-                    invalidPostalCode(newPostalCode) || invalidPhone(newPhoneNumber)) {
+            if (invalidClient(newFirstName, newLastName, newAddress, newPhoneNumber,
+                              newPostalCode, newClientType)) {
                 return;
             }
 
@@ -256,11 +260,13 @@ public class CMSController {
             String postalCode = theInsertView.getPostalCode();
             String phoneNumber = theInsertView.getPhoneNumber();
             String clientType = (theInsertView.getClientType() == 0) ? "C" : "R";
-            if (invalidName(firstName, lastName) || invalidAddress(address) ||
-                invalidPostalCode(postalCode) || invalidPhone(phoneNumber)) {
+
+            if (invalidClient(firstName, lastName, address, phoneNumber,
+                    postalCode, clientType)) {
                 theInsertView.run();
                 return;
             }
+
             Client clientToAdd = new Client(firstName, lastName, address, postalCode, phoneNumber, clientType);
             theModel.addClient(clientToAdd);
             theCMSView.successMessage(theInsertView, "Client added to the Database successfully!");

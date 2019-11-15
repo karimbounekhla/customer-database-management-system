@@ -6,6 +6,8 @@ public class CMSApp {
         InsertClientView icv = new InsertClientView();
         CMSModel cmsm = new CMSModel();
         CMSController theController = new CMSController(cmsv, icv, cmsm);
+
+        // Run the Application
         theController.run();
     }
 
