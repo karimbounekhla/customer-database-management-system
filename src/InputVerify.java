@@ -79,7 +79,8 @@ public class InputVerify {
     public boolean isInvalidPostalCode(String postalCode) {
         Pattern postalPattern = Pattern.compile("^[A-Za-z]\\d[A-Za-z] \\d[A-Za-z]\\d$");
         if (postalCode.length() > 7 || !postalPattern.matcher(postalCode).matches()) {
-            cms.errorMessage(cms, "Phone Number cannot be empty and must be in the format: 123-456-7890");
+            cms.errorMessage(cms, "Postal Code cannot be empty and must be in the format A1A 1A1 where A is any letter" +
+                    " and 1 is any digit");
             return true;
         }
         return false;

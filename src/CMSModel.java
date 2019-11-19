@@ -10,10 +10,10 @@ import java.util.Scanner;
  */
 public class CMSModel {
     public Connection jdbc_connection;
-    public PreparedStatement pStatement; // Use prepared statements for additional security
+    public PreparedStatement pStatement; // Use prepared statements to prevent SQL Injections
     public String tableName = "Client";
     public String databaseName = "mydb";
-    // Table will be created in existing database - no createDB() method
+    // Table will be created in existing database 'mydb'
     // Ensure that database already created before running
     public String connectionInfo = "jdbc:mysql://localhost/" + databaseName +
             "?verifyServerCertificate=false&useSSL=true",
@@ -31,7 +31,7 @@ public class CMSModel {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             jdbc_connection = DriverManager.getConnection(connectionInfo, login, password);
-            // Create + fill table (if not already done - see methods for details)
+            // Create table + fill table (if not already done - see methods for details)
             createTable();
             fillTable();
         } catch(SQLException e) {

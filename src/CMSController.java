@@ -118,26 +118,6 @@ public class CMSController {
             String query = theCMSView.getSearchQuery();
             searchDB(searchCriteria, query);
         }
-
-//        /**
-//         * Helper method that calls in the appropriate search method based on search criteria
-//         * @param criteria 'id', 'lastName' or 'clientType'
-//         */
-//        private void search(String criteria) {
-//            String query = theCMSView.getSearchQuery();
-//
-//            // Executes search based on criteria
-//            if (criteria.equals("id") && !verifyInput.isInvalidID(query)) {
-//                // Ensure that ID is valid before parsing to Int
-//                searchByID(Integer.parseInt(query));
-//            } else if (criteria.equals("lastName")) {
-//                searchByLastName(query);
-//            } else if (criteria.equals("clientType")) {
-//                searchByType(query);
-//            } else {
-//                return;
-//            }
-//        }
     }
 
     /**
