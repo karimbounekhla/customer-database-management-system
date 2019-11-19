@@ -37,21 +37,6 @@ public class CMSController {
         theCMSView.run();
     }
 
-//    /**
-//     * Searches for clients by 'id' and displays the result.
-//     * @param id search ID
-//     */
-//    private void searchByID(int id) {
-//        // Check that ID in valid format
-//        if (verifyInput.isInvalidID(id+"")) return;
-//
-//        // Fetch result list from Model and display on view
-//        ArrayList<Client> searchResults = theModel.getSearchResults("id", id+"");
-//        if (searchResults != null) {
-//            theCMSView.refreshResults(searchResults);
-//        }
-//    }
-
     /**
      * Searches for clients by 'id' and displays the result.
      * @param criteria search criteria (id, lastName or type)
@@ -69,11 +54,12 @@ public class CMSController {
                 break;
             case "clientType":
                 validQuery = !verifyInput.isInvalidType(query);
+                break;
             default:
                 validQuery = false;
         }
 
-        // Fetch result list from Model and display on view (if found result)
+        // If query valid, fetch result list from Model and display on view (if any results found)
         if (validQuery) {
             ArrayList<Client> searchResults = theModel.getSearchResults(criteria, query);
             if (searchResults != null) {
@@ -81,36 +67,6 @@ public class CMSController {
             }
         }
     }
-
-//    /**
-//     * Searches for clients by client Type. Either 'C' (Commercial) or 'R' (Residential)
-//     * @param clientType the client type
-//     */
-//    private void searchByType(String clientType) {
-//        // Check that Customer Type in valid format
-//        if (verifyInput.isInvalidType(clientType)) return;
-//
-//        // Fetch result list from Model and display on view
-//        ArrayList<Client> searchResults = theModel.getSearchResults("clientType", clientType);
-//        if (searchResults != null) {
-//            theCMSView.refreshResults(searchResults);
-//        }
-//    }
-
-//    /**
-//     * Searches for clients by Last Name.
-//     * @param lastName searched Last Name
-//     */
-//    private void searchByLastName(String lastName) {
-//        // Check that name is in the valid format (< 20 chars)
-//        if (verifyInput.isInvalidName("", lastName)) return;
-//
-//        // Fetch result list from Model and display on view
-//        ArrayList<Client> searchResults = theModel.getSearchResults("lastName", lastName);
-//        if (searchResults != null) {
-//            theCMSView.refreshResults(searchResults);
-//        }
-//    }
 
     /**
      * Checks that all client information is valid.

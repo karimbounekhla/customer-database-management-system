@@ -48,17 +48,8 @@ public class CMSModel {
      * @return Array List of Client Objects containing all matches - otherwise null.
      */
     public ArrayList<Client> getSearchResults(String searchCriteria, String searchQuery) {
-        String sql;
         // Set SQL query statement based on search column
-        if (searchCriteria.equals("id")) {
-            sql = "SELECT * FROM " + tableName + " WHERE id=?";
-        } else if (searchCriteria.equals("lastName")) {
-            sql = "SELECT * FROM " + tableName + " WHERE lastName=?";
-        } else if (searchCriteria.equals("clientType")) {
-            sql = "SELECT * FROM " + tableName + " WHERE clientType=?";
-        } else {
-            return null;
-        }
+        String sql = "SELECT * FROM " + tableName + " WHERE " + searchCriteria + "=?";
 
         ArrayList<Client> searchResults = new ArrayList<>();
 

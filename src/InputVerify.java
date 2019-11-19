@@ -21,6 +21,7 @@ public class InputVerify {
      */
     public boolean isInvalidType(String clientType) {
         if (clientType.length() > 1 || !(clientType.equals("R") || clientType.equals("C"))) {
+            System.out.println("ver" + clientType);
             cms.errorMessage(cms, "Client Type must be 1 character; either 'R' (Residential) " +
                     "or 'C' (Commercial).");
             return true;
