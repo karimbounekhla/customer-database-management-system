@@ -37,50 +37,80 @@ public class CMSController {
         theCMSView.run();
     }
 
+//    /**
+//     * Searches for clients by 'id' and displays the result.
+//     * @param id search ID
+//     */
+//    private void searchByID(int id) {
+//        // Check that ID in valid format
+//        if (verifyInput.isInvalidID(id+"")) return;
+//
+//        // Fetch result list from Model and display on view
+//        ArrayList<Client> searchResults = theModel.getSearchResults("id", id+"");
+//        if (searchResults != null) {
+//            theCMSView.refreshResults(searchResults);
+//        }
+//    }
+
     /**
      * Searches for clients by 'id' and displays the result.
-     * @param id search ID
+     * @param criteria search criteria (id, lastName or type)
+     * @param query search query
      */
-    private void searchByID(int id) {
-        // Check that ID in valid format
-        if (verifyInput.isInvalidID(id+"")) return;
+    private void searchDB(String criteria, String query) {
+        // Check that input is valid
+        boolean validQuery;
+        switch (criteria) {
+            case "id":
+                validQuery = !verifyInput.isInvalidID(query);
+                break;
+            case "lastName":
+                validQuery = !verifyInput.isInvalidName("placeholder", query);
+                break;
+            case "clientType":
+                validQuery = !verifyInput.isInvalidType(query);
+            default:
+                validQuery = false;
+        }
 
-        // Fetch result list from Model and display on view
-        ArrayList<Client> searchResults = theModel.getSearchResults("id", id+"");
-        if (searchResults != null) {
-            theCMSView.refreshResults(searchResults);
+        // Fetch result list from Model and display on view (if found result)
+        if (validQuery) {
+            ArrayList<Client> searchResults = theModel.getSearchResults(criteria, query);
+            if (searchResults != null) {
+                theCMSView.refreshResults(searchResults);
+            }
         }
     }
 
-    /**
-     * Searches for clients by client Type. Either 'C' (Commercial) or 'R' (Residential)
-     * @param clientType the client type
-     */
-    private void searchByType(String clientType) {
-        // Check that Customer Type in valid format
-        if (verifyInput.isInvalidType(clientType)) return;
+//    /**
+//     * Searches for clients by client Type. Either 'C' (Commercial) or 'R' (Residential)
+//     * @param clientType the client type
+//     */
+//    private void searchByType(String clientType) {
+//        // Check that Customer Type in valid format
+//        if (verifyInput.isInvalidType(clientType)) return;
+//
+//        // Fetch result list from Model and display on view
+//        ArrayList<Client> searchResults = theModel.getSearchResults("clientType", clientType);
+//        if (searchResults != null) {
+//            theCMSView.refreshResults(searchResults);
+//        }
+//    }
 
-        // Fetch result list from Model and display on view
-        ArrayList<Client> searchResults = theModel.getSearchResults("clientType", clientType);
-        if (searchResults != null) {
-            theCMSView.refreshResults(searchResults);
-        }
-    }
-
-    /**
-     * Searches for clients by Last Name.
-     * @param lastName searched Last Name
-     */
-    private void searchByLastName(String lastName) {
-        // Check that name is in the valid format (< 20 chars)
-        if (verifyInput.isInvalidName("", lastName)) return;
-
-        // Fetch result list from Model and display on view
-        ArrayList<Client> searchResults = theModel.getSearchResults("lastName", lastName);
-        if (searchResults != null) {
-            theCMSView.refreshResults(searchResults);
-        }
-    }
+//    /**
+//     * Searches for clients by Last Name.
+//     * @param lastName searched Last Name
+//     */
+//    private void searchByLastName(String lastName) {
+//        // Check that name is in the valid format (< 20 chars)
+//        if (verifyInput.isInvalidName("", lastName)) return;
+//
+//        // Fetch result list from Model and display on view
+//        ArrayList<Client> searchResults = theModel.getSearchResults("lastName", lastName);
+//        if (searchResults != null) {
+//            theCMSView.refreshResults(searchResults);
+//        }
+//    }
 
     /**
      * Checks that all client information is valid.
@@ -129,28 +159,29 @@ public class CMSController {
         public void actionPerformed(ActionEvent e) {
             // Take in search criteria (ID, Last Name or Client Type) from radio button selection
             String searchCriteria = theCMSView.getSearchCriteria();
-            search(searchCriteria);
-        }
-
-        /**
-         * Helper method that calls in the appropriate search method based on search criteria
-         * @param criteria 'id', 'lastName' or 'clientType'
-         */
-        private void search(String criteria) {
             String query = theCMSView.getSearchQuery();
-
-            // Executes search based on criteria
-            if (criteria.equals("id") && !verifyInput.isInvalidID(query)) {
-                // Ensure that ID is valid before parsing to Int
-                searchByID(Integer.parseInt(query));
-            } else if (criteria.equals("lastName")) {
-                searchByLastName(query);
-            } else if (criteria.equals("clientType")) {
-                searchByType(query);
-            } else {
-                return;
-            }
+            searchDB(searchCriteria, query);
         }
+
+//        /**
+//         * Helper method that calls in the appropriate search method based on search criteria
+//         * @param criteria 'id', 'lastName' or 'clientType'
+//         */
+//        private void search(String criteria) {
+//            String query = theCMSView.getSearchQuery();
+//
+//            // Executes search based on criteria
+//            if (criteria.equals("id") && !verifyInput.isInvalidID(query)) {
+//                // Ensure that ID is valid before parsing to Int
+//                searchByID(Integer.parseInt(query));
+//            } else if (criteria.equals("lastName")) {
+//                searchByLastName(query);
+//            } else if (criteria.equals("clientType")) {
+//                searchByType(query);
+//            } else {
+//                return;
+//            }
+//        }
     }
 
     /**
