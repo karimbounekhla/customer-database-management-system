@@ -9,6 +9,7 @@ import java.util.ArrayList;
  * Controller class for the Application. Controls the data flow between the model and the view,
  * as well as updating the view, while keeping them separate.
  * This class implements all listener classes for the CMS and Insert Client View.
+ * @author karimbounekhla
  */
 public class CMSController {
     private CMSView theCMSView;

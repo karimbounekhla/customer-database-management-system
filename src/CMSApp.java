@@ -1,4 +1,7 @@
-
+/**
+ * Main Method to run the applicaton
+ * @author karimbounekhla
+ */
 public class CMSApp {
 
     /**

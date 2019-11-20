@@ -7,6 +7,7 @@ import java.util.Scanner;
 /**
  * Model Class for the CMS Application. This class is used to communicate with the MySQL Database
  * using JDBC and executing queries.
+ * @author karimbounekhla
  */
 public class CMSModel {
     public Connection jdbc_connection;

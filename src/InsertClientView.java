@@ -4,6 +4,7 @@ import java.awt.event.ActionListener;
 /**
  * The 'View' class for the Insert Node GUI. This container is used to add a client to the
  * database.
+ * @author karimbounekhla
  */
 public class InsertClientView extends JFrame {
     // Instantiate all objects needed for this frame

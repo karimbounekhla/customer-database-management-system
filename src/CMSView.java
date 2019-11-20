@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 /**
  * Class representing the User Interface / GUI for the Main CMS Window.
+ * @author karimbounekhla
  */
 public class CMSView extends JFrame {
     private JList searchResultList;

@@ -1,5 +1,6 @@
 /**
  * Class representing the Client object and all attributes.
+ * @author karimbounekhla 
  */
 public class Client {
     private int id;

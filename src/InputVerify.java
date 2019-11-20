@@ -2,6 +2,7 @@ import java.util.regex.Pattern;
 
 /**
  * Helper class to verify validity of User Input, using basic methods and RegEx.
+ * @author karimbounekhla
  */
 public class InputVerify {
     private CMSView cms;
