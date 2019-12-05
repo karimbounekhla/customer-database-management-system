@@ -1,8 +1,7 @@
 # Customer Database Management Tool
 
-Customer DB Tool built using Java, the Swing Library (GUI) and the JDBC API (for SQL queries) - following the MVC design pattern. The Data is stored in a MySQL Database.
+Customer DB Tool built using Java, the Swing Library (GUI) and the JDBC API (for SQL queries) - following the MVC design pattern. The Data is stored in a MySQL Database. Supported capabilities:
 
-CRUD Features:
 * Add Customer
 * Search for Customer
 * Update Customer
